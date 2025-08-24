@@ -98,7 +98,7 @@ router.get('/:patientId/pdf', async (req, res) => {
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename=bill-${dischargeDetails.patientName}.pdf`);
     
-    // Pipe PDF to response
+    // Pipe PDF to response 
     doc.pipe(res);
 
     // Add content to PDF

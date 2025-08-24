@@ -33,7 +33,7 @@ const DoctorMedicalRecords = () => {
 
   const fetchMedicalRecords = async () => {
     try {
-      const response = await axios.get('/api/doctor/medical-records');
+      const response = await axios.get('/api/medical-records');
       setRecords(response.data);
     } catch (error) {
       console.error('Error fetching medical records:', error);

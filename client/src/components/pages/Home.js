@@ -99,69 +99,6 @@ const Home = () => {
             </Card>
           </Col>
         </Row>
-
-        {/* Features Section */}
-        <Row className="mt-5">
-          <Col md={12}>
-            <h2 className="text-center mb-4">Hospital Management System Features</h2>
-          </Col>
-        </Row>
-        
-        <Row>
-          <Col md={6}>
-            <Card className="mb-3">
-              <Card.Body>
-                <h5>🔐 Secure Authentication</h5>
-                <p>JWT-based authentication with role-based access control for patients, doctors, and administrators.</p>
-              </Card.Body>
-            </Card>
-          </Col>
-          
-          <Col md={6}>
-            <Card className="mb-3">
-              <Card.Body>
-                <h5>📊 Real-time Updates</h5>
-                <p>Socket.io integration for real-time communication and appointment updates.</p>
-              </Card.Body>
-            </Card>
-          </Col>
-          
-          <Col md={6}>
-            <Card className="mb-3">
-              <Card.Body>
-                <h5>📋 Appointment Management</h5>
-                <p>Comprehensive appointment booking and management system for all users.</p>
-              </Card.Body>
-            </Card>
-          </Col>
-          
-          <Col md={6}>
-            <Card className="mb-3">
-              <Card.Body>
-                <h5>💰 Billing & PDF Generation</h5>
-                <p>Automated billing system with PDF invoice generation for patient discharge.</p>
-              </Card.Body>
-            </Card>
-          </Col>
-          
-          <Col md={6}>
-            <Card className="mb-3">
-              <Card.Body>
-                <h5>👥 User Management</h5>
-                <p>Complete user management system with approval workflows for doctors and patients.</p>
-              </Card.Body>
-            </Card>
-          </Col>
-          
-          <Col md={6}>
-            <Card className="mb-3">
-              <Card.Body>
-                <h5>🔍 Search & Filter</h5>
-                <p>Advanced search and filtering capabilities for doctors, patients, and appointments.</p>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
       </Container>
     </div>
   );

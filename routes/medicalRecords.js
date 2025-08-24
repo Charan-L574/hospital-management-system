@@ -9,6 +9,29 @@ const router = express.Router();
 // Apply auth middleware to all routes
 router.use(auth);
 
+router.get('/',  async (req, res) => {
+  try {
+    // Find doctor profile for the logged-in user
+    const doctor = await Doctor.findOne({ user: req.user.id });
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor profile not found' });
+    }
+
+    // Fetch all records belonging to this doctor
+    const records = await MedicalRecord.find({ doctorId: doctor._id })
+      .populate({
+        path: 'patientId',
+        populate: { path: 'user', select: 'firstName lastName email' }
+      })
+      .sort('-createdAt');
+
+    res.json(records);
+  } catch (error) {
+    console.error('Get doctor medical records error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // @route   GET /api/medical-records/patient/:patientId
 // @desc    Get medical records for a patient
 // @access  Private (Doctor or Patient can view their own records)
@@ -82,9 +105,7 @@ router.post('/', authorize('doctor'), async (req, res) => {
 
     await medicalRecord.save();
 
-    const populatedRecord = await MedicalRecord.findById(medicalRecord._id)
-      .populate('doctorId')
-      .populate({
+    const populatedRecord = await MedicalRecord.findById(medicalRecord._id).populate({
         path: 'doctorId',
         populate: {
           path: 'user',
@@ -122,13 +143,12 @@ router.put('/:recordId', authorize('doctor'), async (req, res) => {
     if (record.doctorId.toString() !== doctor._id.toString()) {
       return res.status(403).json({ message: 'Not authorized to update this record' });
     }
-
+     m       
     const updatedRecord = await MedicalRecord.findByIdAndUpdate(
       recordId,
       { ...updateData, updatedAt: Date.now() },
       { new: true }
-    ).populate('doctorId')
-     .populate({
+    ).populate({
        path: 'doctorId',
        populate: {
          path: 'user',

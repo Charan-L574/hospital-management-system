@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Card, Badge } from 'react-bootstrap';
+import { Table, Button, Card, Modal, Badge , Form  } from 'react-bootstrap';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const AdminDischarge = () => {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPatientId, setSelectedPatientId] = useState(null);
+  const [formData, setFormData] = useState({
+    roomCharge: '',
+    medicineCost: '',
+    doctorFee: '',
+    otherCharge: ''
+  });
 
   useEffect(() => {
     fetchPatients();
@@ -22,9 +30,28 @@ const AdminDischarge = () => {
     }
   };
 
-  const handleDischarge = async (patientId) => {
-    // This would typically open a modal with discharge form
-    toast.info('Discharge functionality would open a form here');
+  const handleDischarge = (patientId) => {
+    setSelectedPatientId(patientId);
+    setFormData({
+      roomCharge: '',
+      medicineCost: '',
+      doctorFee: '',
+      otherCharge: ''
+    });
+    setShowModal(true);
+  };
+
+  // Submit discharge form
+  const handleDischargeSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`/api/discharge/${selectedPatientId}`, formData);
+      toast.success('Patient discharged successfully ✅');
+      setShowModal(false);
+      fetchPatients(); // refresh list
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Discharge failed ❌');
+    }
   };
 
   const handleDownloadPDF = async (patientId) => {
@@ -99,8 +126,69 @@ const AdminDischarge = () => {
           </Table>
         </Card.Body>
       </Card>
+    {/* Discharge Modal */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Discharge Patient</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleDischargeSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Room Charge (per day)</Form.Label>
+              <Form.Control
+                type="number"
+                name="roomCharge"
+                value={formData.roomCharge}
+                onChange={(e) =>
+                  setFormData({ ...formData, roomCharge: e.target.value })
+                }
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Medicine Cost</Form.Label>
+              <Form.Control
+                type="number"
+                name="medicineCost"
+                value={formData.medicineCost}
+                onChange={(e) =>
+                  setFormData({ ...formData, medicineCost: e.target.value })
+                }
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Doctor Fee</Form.Label>
+              <Form.Control
+                type="number"
+                name="doctorFee"
+                value={formData.doctorFee}
+                onChange={(e) =>
+                  setFormData({ ...formData, doctorFee: e.target.value })
+                }
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Other Charges</Form.Label>
+              <Form.Control
+                type="number"
+                name="otherCharge"
+                value={formData.otherCharge}
+                onChange={(e) =>
+                  setFormData({ ...formData, otherCharge: e.target.value })
+                }
+                required
+              />
+            </Form.Group>
+            <Button variant="success" type="submit">
+              Confirm Discharge
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
 
-export default AdminDischarge; 
+export default AdminDischarge;
